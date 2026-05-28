@@ -1,50 +1,38 @@
-import React, { useState } from 'react';
-import { supabase } from '../supabase';
-import './PaymentsTable.css'; // підключаємо стилі
-
-const months = [
-  'Вересень',
-  'Жовтень',
-  'Листопад',
-  'Грудень',
-  'Січень',
-  'Лютий',
-  'Березень',
-  'Квітень',
-  'Травень',
-];
+import React, { useState } from "react";
+import { supabase } from "../supabase";
+import "./PaymentsTable.css";
 
 function PaymentsTable({ students, payments }) {
   const [receipts, setReceipts] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
+  const months = [
+    "Вересень","Жовтень","Листопад",
+    "Грудень","Січень","Лютий",
+    "Березень","Квітень","Травень"
+  ];
+
   const showReceipts = async (studentId) => {
     const studentPayments = payments
-      .filter((p) => p.student_id === studentId)
-      .map((p) => p.id);
+      .filter(p => p.student_id === studentId)
+      .map(p => p.id);
 
-    const { data, error } = await supabase
-      .from('receipts')
-      .select('file_url, payment_id')
-      .in('payment_id', studentPayments);
+    const { data } = await supabase
+      .from("receipts")
+      .select("file_url, payment_id")
+      .in("payment_id", studentPayments);
 
-    if (error) {
-      console.error(error);
-    } else {
-      setReceipts(data || []);
-      setShowModal(true);
-    }
+    setReceipts(data || []);
+    setShowModal(true);
   };
 
   return (
-    <div>
+    <div className="payments-container">
       <table className="table">
         <thead>
           <tr>
             <th>Учень</th>
-            {months.map((m) => (
-              <th key={m}>{m}</th>
-            ))}
+            {months.map((m) => <th key={m}>{m}</th>)}
             <th>Дії</th>
           </tr>
         </thead>
@@ -54,26 +42,16 @@ function PaymentsTable({ students, payments }) {
               <td>{s.name}</td>
               {months.map((m) => {
                 const payment = payments.find(
-                  (p) => p.student_id === s.id && p.month === m,
+                  (p) => p.student_id === s.id && p.month === m
                 );
                 return (
-                  <td
-                    key={m}
-                    className={payment?.status === 'paid' ? 'paid' : 'unpaid'}
-                  >
-                    {payment?.status === 'paid'
-                      ? '✅ Сплачено'
-                      : '❌ Не сплачено'}
+                  <td key={m} className={payment?.status === "paid" ? "paid" : "unpaid"}>
+                    {payment?.status === "paid" ? "✅ Сплачено" : "❌ Не сплачено"}
                   </td>
                 );
               })}
               <td>
-                <button
-                  className="btn"
-                  onClick={() => showReceipts(s.id)}
-                >
-                  Чеки
-                </button>
+                <button className="btn" onClick={() => showReceipts(s.id)}>Чеки</button>
               </td>
             </tr>
           ))}
@@ -88,12 +66,8 @@ function PaymentsTable({ students, payments }) {
               <ul>
                 {receipts.map((r, i) => (
                   <li key={i}>
-                    <a
-                      href={r.file_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Переглянути чек {i + 1}
+                    <a href={r.file_url} target="_blank" rel="noopener noreferrer">
+                      Переглянути чек {i+1}
                     </a>
                   </li>
                 ))}
@@ -101,12 +75,7 @@ function PaymentsTable({ students, payments }) {
             ) : (
               <p>Немає завантажених чеків</p>
             )}
-            <button
-              className="btn"
-              onClick={() => setShowModal(false)}
-            >
-              Закрити
-            </button>
+            <button className="btn" onClick={() => setShowModal(false)}>Закрити</button>
           </div>
         </div>
       )}

@@ -1,0 +1,47 @@
+/* Скидання базових стилів */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Базові шрифти та кольори */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9; /* світлий фон */
+  color: #333; /* базовий текст */
+  line-height: 1.5;
+}
+
+/* Заголовки */
+h1,
+h2,
+h3 {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #222;
+}
+
+/* Посилання */
+a {
+  color: #1976d2;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Кнопки */
+button {
+  font-family: inherit;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
