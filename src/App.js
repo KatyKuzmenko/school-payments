@@ -9,18 +9,27 @@ function App() {
   const [payments, setPayments] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: studentsData } = await supabase
-        .from('students')
-        .select('*');
-      const { data: paymentsData } = await supabase
-        .from('payments')
-        .select('*');
-      setStudents(studentsData || []);
-      setPayments(paymentsData || []);
-    };
-    fetchData();
+    fetchStudents();
+    fetchPayments();
   }, []);
+
+  const fetchStudents = async () => {
+    const { data, error } = await supabase.from('students').select('*');
+    if (error) {
+      console.error('Помилка при завантаженні учнів:', error.message);
+    } else {
+      setStudents(data || []);
+    }
+  };
+
+  const fetchPayments = async () => {
+    const { data, error } = await supabase.from('payments').select('*');
+    if (error) {
+      console.error('Помилка при завантаженні оплат:', error.message);
+    } else {
+      setPayments(data || []);
+    }
+  };
 
   return (
     <div className="app-container">
@@ -31,6 +40,8 @@ function App() {
         <PaymentsTable
           students={students}
           payments={payments}
+          refreshPayments={fetchPayments}
+          refreshStudents={fetchStudents}
         />
       </main>
     </div>
