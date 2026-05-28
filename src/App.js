@@ -1,23 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import { supabase } from "./supabase";
+import PaymentsTable from "./components/PaymentsTable";
+import "./App.css"; // підключаємо стилі
 
 function App() {
+  const [students, setStudents] = useState([]);
+  const [payments, setPayments] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data: studentsData, error: studentsError } = await supabase
+        .from("students")
+        .select("*");
+
+      if (studentsError) {
+        console.error("Помилка при отриманні учнів:", studentsError);
+      } else {
+        setStudents(studentsData || []);
+      }
+
+      const { data: paymentsData, error: paymentsError } = await supabase
+        .from("payments")
+        .select("*");
+
+      if (paymentsError) {
+        console.error("Помилка при отриманні оплат:", paymentsError);
+      } else {
+        setPayments(paymentsData || []);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      <h1 className="app-title">Оплати по місяцях</h1>
+      <PaymentsTable students={students} payments={payments} />
     </div>
   );
 }
